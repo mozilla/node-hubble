@@ -12,13 +12,6 @@
     "config": "~0.4.18",
     "request": "~2.14.0"
   },
-  "devDependencies": {
-    "node-dev": "~0.2.8",
-    "jshint": "~0.9.1"
-  },
-  "scripts": {
-    "dev": "NODE_ENV=local ./node_modules/node-dev/node-dev app.js"
-  },
   "license": "http://www.apache.org/licenses/LICENSE-2.0.html",
   "engine": {
     "node": ">=0.8"

@@ -2,17 +2,15 @@
 var express = require( 'express' ),
     config = require( 'config' ),
     request = require( 'request' ),
-    http = require( 'http' ),
-    urlParser = require( 'url' ),
     app = express(),
     ip = process.env.IP || config.server.bindIP,
     port = process.env.PORT || config.server.bindPort,
     server;
 
 /**
- * Given http://bit.ly/abc, find and return full URL
+ * Discover the mime type for a given resource, following redirects
  */
-function unshortenUrl( url, callback ) {
+function getContentType( url, callback ) {
   request({
     method: "HEAD",
     url: url,
@@ -20,29 +18,11 @@ function unshortenUrl( url, callback ) {
   },
   function( err, res ) {
     if ( err ) {
-      return callback( err );
+      callback( err );
+      return;
     }
-    callback( null, res.request.href );
-  });
-}
 
-/**
- * Discover the mime type for a given resource
- */
-function getContentType( url, callback ) {
-  var parsedUrl = urlParser.parse( url );
-
-  http.get({
-    method: 'HEAD',
-    host: parsedUrl.hostname,
-    port: parsedUrl.port,
-    path: parsedUrl.path
-  },
-  function( res ) {
-    callback( null, res );
-  })
-  .on( 'error', function( err ) {
-    callback( err );
+    callback( null, { href: res.request.href, contentType: res.headers[ 'content-type' ] } );
   });
 }
 
@@ -53,23 +33,13 @@ app.get( '/api/url/*', function( req, res ) {
     return;
   }
 
-  unshortenUrl( url, function( err, href ) {
+  getContentType( url, function( err, result ) {
     if ( err ) {
-      res.json( { error: "Unable to use url." }, 500 );
+      res.json( { error: "Unable to determine content type." }, 500 );
       return;
     }
 
-    getContentType( href, function( err, result ) {
-      if ( err ) {
-        res.json( { error: "Unable to determin content type." }, 500 );
-        return;
-      }
-
-      res.json({
-        href: href,
-        contentType: result.headers[ 'content-type' ]
-      });
-    });
+    res.json( result );
   });
 });
 
