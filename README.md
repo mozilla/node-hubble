@@ -82,9 +82,11 @@ A number of situations can cause errors. In all such cases, the API will return 
 
 Current errors include:
 
-  - `Expected url param, found none.` no url was specified to the API call.
-  - `Unable to use url.' the url was not usable for some reason.
-  - `Unable to determin content type.` the url was usable, but it was not possible to determine the content-type for some reason.
+  - `Expected url param, found none.` -- no url was specified to the API call.
+  - `Unable to use url.` -- the url was not usable for some reason.
+  - `Unable to determin content type.` -- the url was usable, but it was not possible to determine the content-type for some reason.
+
+If no error message is given, an unknown error occurred.
 
 ## License
 
