@@ -17,15 +17,20 @@ The server is configured by changing the settings in `config/default.json`. Thes
 
 ## How to use
 ```
-$node app.js
+$ node app.js
 ```
 
 ## API
 
-The web-dna server takes a URL and attempts to do two things. First, it gets the actual URL in the case that a URL shortener has been used, or other redirects. Second, it requests the HTTP headers for this resource, and determins the `content-type` that is being used. Both pieces of information are returned as JSON.
+The web-dna server expects a URL in the following form:
+
+    http://<bindIP>:<bindPort>/api/url/<url>
+
+The server takes the URL and attempts to do two things. First, it gets the actual URL in the case that a URL shortener has been used, or other redirects. Second, it requests the HTTP headers for this resource, and determins the `content-type` that is being used. Both pieces of information are returned as JSON.
 
 Assuming a web-dna server running on `http://localhost:8888`, the following are valid API calls:
 
+### Example 1: simple url
 ```
 http://localhost:8888/api/url/http://google.com
 
@@ -35,6 +40,7 @@ http://localhost:8888/api/url/http://google.com
 }
 ```
 
+### Example 2: shortened url
 ```
 http://localhost:8888/api/url/http://bit.ly/900913
 
@@ -44,12 +50,23 @@ http://localhost:8888/api/url/http://bit.ly/900913
 }
 ```
 
+### Example 3: image resource
 ```
 http://localhost:8888/api/url/http://i.imgur.com/syPS3rG.jpg
 
 {
   "href": "http://i.imgur.com/syPS3rG.jpg",
   "contentType": "image/jpeg"
+}
+```
+
+### Example 4: video resource
+```
+http://localhost:8888/api/url/http://archive.org/download/PET1018_R-2_LA/PET1018_R-2_LA.mp4
+
+{
+  "href": "http://ia700805.us.archive.org/2/items/PET1018_R-2_LA/PET1018_R-2_LA.mp4",
+  "contentType": "video/mp4"
 }
 ```
 
