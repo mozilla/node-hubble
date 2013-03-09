@@ -70,6 +70,22 @@ http://localhost:8888/api/url/http://archive.org/download/PET1018_R-2_LA/PET1018
 }
 ```
 
+## Errors
+
+A number of situations can cause errors. In all such cases, the API will return a 500 result code, and JSON of the following form:
+
+```
+{
+  "error": "Error message..."
+}
+```
+
+Current errors include:
+
+  - `Expected url param, found none.` no url was specified to the API call.
+  - `Unable to use url.' the url was not usable for some reason.
+  - `Unable to determin content type.` the url was usable, but it was not possible to determine the content-type for some reason.
+
 ## License
 
 Copyright 2013 David Humphrey <david.humphrey@senecacollege.ca>
