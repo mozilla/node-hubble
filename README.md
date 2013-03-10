@@ -9,11 +9,9 @@ $ npm install
 
 ## Configuration
 
-The server is configured by changing the settings in `config/default.json`. These settings include:
+The server is configured by setting environment variables. These settings include:
 
-  - `server` settings for the server
-    - `bindIP` the IP or hostname to use for the server (e.g., localhost).
-    - `bindPort` the Port number to use for the server (e.g., 8888).  If using a port number lower than 1024, the server will have to be run as root.
+- `PORT` - The Port number to use for the server. Defaults to `8888`.
 
 ## How to use
 ```
