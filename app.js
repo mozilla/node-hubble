@@ -1,10 +1,8 @@
 
 var express = require( 'express' ),
-    config = require( 'config' ),
     request = require( 'request' ),
     app = express(),
-    ip = process.env.IP || config.server.bindIP,
-    port = process.env.PORT || config.server.bindPort,
+    port = process.env.PORT || 8888,
     server;
 
 /**
@@ -43,8 +41,8 @@ app.get( '/api/url/*', function( req, res ) {
   });
 });
 
-server = app.listen( port, ip, function() {
+server = app.listen( port, function() {
   var addy = server.address();
-  console.log( 'HTTP Server started on http://' + config.server.bindIP + ':' + addy.port );
+  console.log( 'HTTP Server started on port ' + addy.port );
   console.log( 'Press Ctrl+C to stop' );
 });
