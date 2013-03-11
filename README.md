@@ -70,6 +70,18 @@ http://localhost:8888/api/url/http://archive.org/download/PET1018_R-2_LA/PET1018
 }
 ```
 
+## JSON vs. JSONP
+
+If the caller provides a `callback=<callbackFn>` query string parameter, the result will be JSONP instead of pure JSON:
+```
+http://localhost:8888/api/url/http://google.com?callback=foo
+
+foo && foo({
+  "href": "http://www.google.ca/",
+  "contentType": "text/html; charset=ISO-8859-1"
+});
+```
+
 ## Errors
 
 A number of situations can cause errors. In all such cases, the API will return a 500 result code, and JSON of the following form:
