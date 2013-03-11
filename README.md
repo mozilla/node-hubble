@@ -12,6 +12,8 @@ $ npm install
 The server is configured by setting environment variables. These settings include:
 
 - `PORT` - The Port number to use for the server. Defaults to `8888`.
+- `REDIS_URL`, `REDISCLOUD_URL`, or `REDISTOGO_URL` - The URL of the Redis server used for caching. Defaults to none.
+- `CACHE_EXPIRE` - The number of seconds to cache responses. Defaults to `3600` seconds.
 
 ## How to use
 ```
