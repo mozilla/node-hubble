@@ -12,17 +12,17 @@ var redisURL = process.env.REDIS_URL ||
                process.env.REDISTOGO_URL;
 
 if ( redisURL ) {
-  console.log( "Using Redis cache with " + redisURL );
+  console.log( 'Using Redis cache with ' + redisURL );
 
   try {
-    redisURL = require( "url" ).parse( redisURL );
-    redis = require( "redis" ).createClient( redisURL.port, redisURL.hostname );
+    redisURL = require( 'url' ).parse( redisURL );
+    redis = require( 'redis' ).createClient( redisURL.port, redisURL.hostname );
 
     if ( redisURL.auth ) {
-      redis.auth ( redisURL.auth.split( ":" )[ 1 ] );
+      redis.auth ( redisURL.auth.split( ':' )[ 1 ] );
     }
-  } catch (ex) {
-    console.warning( "Failed to load Redis:" + ex );
+  } catch ( ex ) {
+    console.warning( 'Failed to load Redis:' + ex );
   }
 }
 
@@ -38,7 +38,7 @@ function cacheCheck( req, res, next ) {
     });
   }
 
-  redis.mget( [ url + ":href", url + ":contentType" ], function( err, response ) {
+  redis.mget( [ url + ':href', url + ':contentType' ], function( err, response ) {
     if ( response[ 0 ] && response[ 1 ] ) {
       res.json({ href: response[ 0 ], contentType: response[ 1 ] });
     } else {
@@ -54,7 +54,7 @@ function cacheCheck( req, res, next ) {
  */
 function getContentType( url, callback ) {
   request({
-    method: "HEAD",
+    method: 'HEAD',
     url: url,
     followAllRedirects: true
   },
@@ -78,21 +78,21 @@ app.get( '/api/url/*', middleware, function( req, res ) {
   var url = req.params[ 0 ];
 
   if ( !url ) {
-    res.json( { error: "Expected url param, found none." }, 500 );
+    res.json( { error: 'Expected url param, found none.' }, 500 );
     return;
   }
 
   getContentType( url, function( err, result ) {
     if ( err ) {
-      res.json( { error: "Unable to determine content type." }, 500 );
+      res.json( { error: 'Unable to determine content type.' }, 500 );
       return;
     }
 
     res.json( result );
     if ( redis ) {
       redis.multi()
-        .setex(url + ":href", cacheExpire, result.href)
-        .setex(url + ":contentType", cacheExpire, result.contentType)
+        .setex( url + ':href', cacheExpire, result.href )
+        .setex( url + ':contentType', cacheExpire, result.contentType )
         .exec();
     }
   });
