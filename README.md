@@ -82,6 +82,18 @@ foo && foo({
 });
 ```
 
+Note: if the URL being passed to the API also includes `?callback=...`, remember to encode the URL such that `?` becomes `%3F` and is not interpreted as part of the API call. Consider:
+```
+// URL with ?callback param used as part of API call (JSONP)
+http://localhost:8888/api/url/http://foo.com?callback=bar
+
+// URL containing ?callback param (not part of API call)
+http://localhost:8888/api/url/http%3A%2F%2Ffoo.com%3Fcallback%3Dfn
+
+// URL containing ?callback param with API using JSONP callback param bar
+http://localhost:8888/api/url/http%3A%2F%2Ffoo.com%3Fcallback%3Dfn?callback=bar
+```
+
 ## Errors
 
 A number of situations can cause errors. In all such cases, the API will return a 500 result code, and JSON of the following form:
