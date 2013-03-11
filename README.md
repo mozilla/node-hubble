@@ -17,7 +17,7 @@ The server is configured by setting environment variables. These settings includ
 
 ## How to use
 ```
-$ node app.js
+$ node server.js
 ```
 
 ## API

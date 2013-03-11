@@ -23,6 +23,7 @@ if ( redisURL ) {
     }
   } catch ( ex ) {
     console.warning( 'Failed to load Redis:' + ex );
+    redis = null;
   }
 }
 
