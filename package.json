@@ -12,7 +12,8 @@
     "request": "~2.14.0"
   },
   "license": "http://www.apache.org/licenses/LICENSE-2.0.html",
-  "engine": {
-    "node": ">=0.8"
+  "engines": {
+    "node": "0.8.x",
+    "npm": "1.2.x"
   }
 }
