@@ -41,7 +41,7 @@ function cacheCheck( req, res, next ) {
 
   redis.mget( [ url + ':href', url + ':contentType' ], function( err, response ) {
     if ( response[ 0 ] && response[ 1 ] ) {
-      res.json({ href: response[ 0 ], contentType: response[ 1 ] });
+      res.jsonp({ href: response[ 0 ], contentType: response[ 1 ] });
     } else {
       process.nextTick(function() {
         next();
@@ -79,17 +79,17 @@ app.get( '/api/url/*', middleware, function( req, res ) {
   var url = req.params[ 0 ];
 
   if ( !url ) {
-    res.json( { error: 'Expected url param, found none.' }, 500 );
+    res.jsonp( { error: 'Expected url param, found none.' }, 500 );
     return;
   }
 
   getContentType( url, function( err, result ) {
     if ( err ) {
-      res.json( { error: 'Unable to determine content type.' }, 500 );
+      res.jsonp( { error: 'Unable to determine content type.' }, 500 );
       return;
     }
 
-    res.json( result );
+    res.jsonp( result );
     if ( redis ) {
       redis.multi()
         .setex( url + ':href', cacheExpire, result.href )
