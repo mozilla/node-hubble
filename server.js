@@ -75,7 +75,7 @@ if ( redis ) {
   middleware.push( cacheCheck );
 }
 
-app.get( '/api/url/*', middleware, function( req, res ) {
+app.get( '/url/*', middleware, function( req, res ) {
   var url = req.params[ 0 ];
 
   if ( !url ) {

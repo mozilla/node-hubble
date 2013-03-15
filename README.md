@@ -24,7 +24,7 @@ $ node server.js
 
 The web-dna server expects a URL in the following form:
 
-    http://localhost:<PORT>/api/url/<url>
+    http://localhost:<PORT>/url/<url>
 
 The server takes the URL and attempts to do two things. First, it gets the actual URL in the case that a URL shortener has been used, or other redirects. Second, it requests the HTTP headers for this resource, and determins the `content-type` that is being used. Both pieces of information are returned as JSON.
 
@@ -32,7 +32,7 @@ Assuming a web-dna server running on `http://localhost:8888`, the following are 
 
 ### Example 1: simple url
 ```
-http://localhost:8888/api/url/http://google.com
+http://localhost:8888/url/http://google.com
 
 {
   "href": "http://www.google.ca/",
@@ -42,7 +42,7 @@ http://localhost:8888/api/url/http://google.com
 
 ### Example 2: shortened url
 ```
-http://localhost:8888/api/url/http://bit.ly/900913
+http://localhost:8888/url/http://bit.ly/900913
 
 {
   "href": "http://www.google.ca/",
@@ -52,7 +52,7 @@ http://localhost:8888/api/url/http://bit.ly/900913
 
 ### Example 3: image resource
 ```
-http://localhost:8888/api/url/http://i.imgur.com/syPS3rG.jpg
+http://localhost:8888/url/http://i.imgur.com/syPS3rG.jpg
 
 {
   "href": "http://i.imgur.com/syPS3rG.jpg",
@@ -62,7 +62,7 @@ http://localhost:8888/api/url/http://i.imgur.com/syPS3rG.jpg
 
 ### Example 4: video resource
 ```
-http://localhost:8888/api/url/http://archive.org/download/PET1018_R-2_LA/PET1018_R-2_LA.mp4
+http://localhost:8888/url/http://archive.org/download/PET1018_R-2_LA/PET1018_R-2_LA.mp4
 
 {
   "href": "http://ia700805.us.archive.org/2/items/PET1018_R-2_LA/PET1018_R-2_LA.mp4",
@@ -74,7 +74,7 @@ http://localhost:8888/api/url/http://archive.org/download/PET1018_R-2_LA/PET1018
 
 If the caller provides a `callback=<callbackFn>` query string parameter, the result will be JSONP instead of pure JSON:
 ```
-http://localhost:8888/api/url/http://google.com?callback=foo
+http://localhost:8888/url/http://google.com?callback=foo
 
 foo && foo({
   "href": "http://www.google.ca/",
@@ -85,13 +85,13 @@ foo && foo({
 Note: if the URL being passed to the API also includes `?callback=...`, remember to encode the URL such that `?` becomes `%3F` and is not interpreted as part of the API call. Consider:
 ```
 // URL with ?callback param used as part of API call (JSONP)
-http://localhost:8888/api/url/http://foo.com?callback=bar
+http://localhost:8888/url/http://foo.com?callback=bar
 
 // URL containing ?callback param (not part of API call)
-http://localhost:8888/api/url/http%3A%2F%2Ffoo.com%3Fcallback%3Dfn
+http://localhost:8888/url/http%3A%2F%2Ffoo.com%3Fcallback%3Dfn
 
 // URL containing ?callback param with API using JSONP callback param bar
-http://localhost:8888/api/url/http%3A%2F%2Ffoo.com%3Fcallback%3Dfn?callback=bar
+http://localhost:8888/url/http%3A%2F%2Ffoo.com%3Fcallback%3Dfn?callback=bar
 ```
 
 ## Errors
