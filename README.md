@@ -111,6 +111,15 @@ Current errors include:
 
 If no error message is given, an unknown error occurred.
 
+## Running the Tests
+
+You can run the tests locally by doing the following from the project's root directory:
+```
+$ npm test
+```
+The tests depend on a network connection being available (some real URLs are used).
+
+
 ## License
 
 Copyright 2013 David Humphrey <david.humphrey@senecacollege.ca>
