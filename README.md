@@ -1,5 +1,7 @@
 # web-dna
 
+[![Build Status](https://travis-ci.org/humphd/web-dna.png?branch=master)](https://travis-ci.org/humphd/web-dna)
+
 This is an Express based REST API for discovering the content type of URLs.
 
 ## Installation
