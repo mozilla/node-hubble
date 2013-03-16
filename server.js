@@ -1,6 +1,7 @@
 
 var express = require( 'express' ),
     request = require( 'request' ),
+    util = require( 'util' ),
     app = express(),
     port = process.env.PORT || 8888,
     cacheExpire = process.env.CACHE_EXPIRE || 60 * 60, // one hour
@@ -12,7 +13,7 @@ var redisURL = process.env.REDIS_URL ||
                process.env.REDISTOGO_URL;
 
 if ( redisURL ) {
-  console.log( 'Using Redis cache with ' + redisURL );
+  util.log( 'Using Redis cache with ' + redisURL );
 
   try {
     redisURL = require( 'url' ).parse( redisURL );
@@ -22,7 +23,7 @@ if ( redisURL ) {
       redis.auth ( redisURL.auth.split( ':' )[ 1 ] );
     }
   } catch ( ex ) {
-    console.warning( 'Failed to load Redis:' + ex );
+    util.error( 'Failed to load Redis:' + ex );
     redis = null;
   }
 }
@@ -101,6 +102,11 @@ app.get( '/url/*', middleware, function( req, res ) {
 
 server = app.listen( port, function() {
   var addy = server.address();
-  console.log( 'HTTP Server started on port ' + addy.port );
-  console.log( 'Press Ctrl+C to stop' );
+  util.log( 'HTTP Server started on port ' + addy.port );
+  util.log( 'Press Ctrl+C to stop' );
+
+  // If we're running as a child process, let our parent know we're ready.
+  if ( process.send ) {
+    process.send( 'Started' );
+  }
 });

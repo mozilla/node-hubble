@@ -1,18 +1,30 @@
 {
   "name": "web-dna",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "David Humphrey <david.humphrey@senecacollege.ca>",
   "contributors": [
     "Jon Buckley <jon@jbuckley.ca>"
+  ],
+  "keywords": [
+    "url",
+    "api",
+    "content-type",
+    "mime"
   ],
   "description": "Node Web API for discovering content types for URLs",
   "repository": {
     "type": "git",
     "url": "https://github.com/humphd/web-dna.git"
   },
+  "scripts": {
+    "test": "node ./node_modules/mocha/bin/mocha --reporter spec --slow 1000 --timeout 5000"
+  },
   "dependencies": {
     "express": "~3.1.0",
     "request": "~2.14.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.8.2"
   },
   "optionalDependencies": {
     "hiredis": "~0.1.14",
