@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/humphd/web-dna.png?branch=master)](https://travis-ci.org/humphd/web-dna)
 
-This is an Express based REST API for discovering the content type of URLs.
+This is an node.js, Express-based REST API for discovering the content type of URLs.
 
 ## Installation
 ```
@@ -15,7 +15,8 @@ The server is configured by setting environment variables. These settings includ
 
 - `PORT` - The Port number to use for the server. Defaults to `8888`.
 - `REDIS_URL`, `REDISCLOUD_URL`, or `REDISTOGO_URL` - The URL of the Redis server used for caching. Defaults to none.
-- `CACHE_EXPIRE` - The number of seconds to cache responses. Defaults to `3600` seconds.
+- `MEMCACHED_URL` - The URL of the Memcached server used for caching. Defaults to none.
+- `CACHE_EXPIRE` - The number of seconds to cache responses. Defaults to `3600` seconds (i.e., 1 hour).
 
 ## How to use
 ```
@@ -121,6 +122,12 @@ $ npm test
 ```
 The tests depend on a network connection being available (some real URLs are used).
 
+In order to test the server's cache support, you have to run the tests with some extra environment variables. First, install and start `redis-server` and/or `memcached` locally, then run the tests like so:
+```
+$ EXPECT_CACHED=1 REDIS_URL=127.0.0.1 npm test
+...
+$ EXPECT_CACHED=1 MEMCACHED_URL=127.0.0.1 npm test
+```
 
 ## License
 

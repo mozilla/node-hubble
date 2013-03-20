@@ -4,8 +4,17 @@ node_js:
   - "0.8"
   - "0.10"
 
+services:
+  - redis-server
+  - memcached
+
 install:
   - npm install
 
 script:
   - npm test
+
+env:
+  - EXPECT_CACHED=0
+  - EXPECT_CACHED=1 REDIS_URL=127.0.0.1
+  - EXPECT_CACHED=1 MEMCACHED_URL=127.0.0.1
