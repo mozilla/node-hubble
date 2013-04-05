@@ -1,6 +1,6 @@
 {
-  "name": "web-dna",
-  "version": "0.2.0",
+  "name": "node-hubble",
+  "version": "0.3.0",
   "author": "David Humphrey <david.humphrey@senecacollege.ca>",
   "contributors": [
     "Jon Buckley <jon@jbuckley.ca>"
@@ -14,7 +14,7 @@
   "description": "Node Web API for discovering content types for URLs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/humphd/web-dna.git"
+    "url": "https://github.com/humphd/node-hubble.git"
   },
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha --reporter spec --slow 1000 --timeout 5000"
