@@ -21,8 +21,8 @@ function stopServer() {
 
 describe( "/url/* API (depends on network)", function() {
 
-  var repoURL = "http://github.com/humphd/web-dna",
-      repoURLHref = "https://github.com/humphd/web-dna",
+  var repoURL = "http://github.com/humphd/node-hubble",
+      repoURLHref = "https://github.com/humphd/node-hubble",
       repoURLContentType = "text/html; charset=utf-8",
       host = "http://localhost:8888",
       api = host + "/url/";

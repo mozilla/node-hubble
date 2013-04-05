@@ -1,6 +1,6 @@
-# web-dna
+# node-hubble
 
-[![Build Status](https://travis-ci.org/humphd/web-dna.png?branch=master)](https://travis-ci.org/humphd/web-dna)
+[![Build Status](https://travis-ci.org/humphd/node-hubble.png?branch=master)](https://travis-ci.org/humphd/node-hubble)
 
 This is an node.js, Express-based REST API for discovering the content type of URLs.
 
@@ -25,13 +25,13 @@ $ node server.js
 
 ## API
 
-The web-dna server expects a URL in the following form:
+The node-hubble server expects a URL in the following form:
 
     http://localhost:<PORT>/url/<url>
 
 The server takes the URL and attempts to do two things. First, it gets the actual URL in the case that a URL shortener has been used, or other redirects. Second, it requests the HTTP headers for this resource, and determins the `content-type` that is being used. Both pieces of information are returned as JSON.
 
-Assuming a web-dna server running on `http://localhost:8888`, the following are valid API calls:
+Assuming a node-hubble server running on `http://localhost:8888`, the following are valid API calls:
 
 ### Example 1: simple url
 ```
