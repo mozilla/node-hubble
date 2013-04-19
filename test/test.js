@@ -5,6 +5,12 @@ var assert = require( "assert" ),
 
 var util = require('util');
 
+var repoURL = "http://github.com/humphd/node-hubble",
+    repoURLHref = "https://github.com/humphd/node-hubble",
+    repoURLContentType = "text/html; charset=utf-8",
+    host = "http://localhost:8888",
+    api = host + "/url/";
+
 function startServer( callback ) {
   // Spin-up the server as a child process
   child = fork( "server.js", null, {} );
@@ -20,12 +26,6 @@ function stopServer() {
 }
 
 describe( "/url/* API (depends on network)", function() {
-
-  var repoURL = "http://github.com/humphd/node-hubble",
-      repoURLHref = "https://github.com/humphd/node-hubble",
-      repoURLContentType = "text/html; charset=utf-8",
-      host = "http://localhost:8888",
-      api = host + "/url/";
 
   // Do a JSON request of the given <url>, i.e., http://localhost:8888/url/<url>
   function apiHelper( url, callback ) {
@@ -93,6 +93,31 @@ describe( "/url/* API (depends on network)", function() {
       assert.equal( body.contentType, repoURLContentType );
       // Second hit on this URL should from cache
       assert.equal( !!body.cached, expectCached );
+      done();
+    });
+  });
+
+});
+
+describe( "/healthcheck", function() {
+
+  // Do a JSON request of the given <url>, i.e., http://localhost:8888/url/<url>
+  function apiHelper( url, callback ) {
+    request.get({ uri: api + url, json: true }, callback );
+  }
+
+  before( function( done ) {
+    startServer( done );
+  });
+
+  after( function() {
+    stopServer();
+  });
+
+  it( "should give a 200 for /healthcheck", function( done ) {
+    request.get( { url: host + '/healthcheck', json: true }, function( err, res, body ) {
+      assert.ok( !err );
+      assert.equal( res.statusCode, 200 );
       done();
     });
   });
