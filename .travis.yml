@@ -11,6 +11,9 @@ services:
 install:
   - npm install
 
+before_script:
+  - npm install -g grunt-cli
+
 script:
   - npm test
 

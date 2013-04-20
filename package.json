@@ -17,7 +17,7 @@
     "url": "https://github.com/humphd/node-hubble.git"
   },
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha --reporter spec --slow 1000 --timeout 5000"
+    "test": "grunt && node ./node_modules/mocha/bin/mocha --reporter spec --slow 1000 --timeout 5000"
   },
   "dependencies": {
     "express": "~3.1.0",
@@ -29,14 +29,12 @@
     "redis": "~0.8.2"
   },
   "devDependencies": {
-    "mocha": "~1.8.2"
+    "mocha": "~1.8.2",
+    "grunt": "0.4.1",
+    "grunt-contrib-jshint": "0.4.3"
   },
   "license": {
     "type": "Apache",
     "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-  },
-  "engines": {
-    "node": "0.8.x",
-    "npm": "1.2.x"
   }
 }
