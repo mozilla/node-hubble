@@ -14,7 +14,7 @@
   "description": "Node Web API for discovering content types for URLs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/humphd/node-hubble.git"
+    "url": "https://github.com/mozilla/node-hubble.git"
   },
   "scripts": {
     "test": "grunt && node ./node_modules/mocha/bin/mocha --reporter spec --slow 1000 --timeout 5000"
