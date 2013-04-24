@@ -1,6 +1,6 @@
 # node-hubble
 
-[![Build Status](https://travis-ci.org/humphd/node-hubble.png?branch=master)](https://travis-ci.org/humphd/node-hubble)
+[![Build Status](https://travis-ci.org/mozilla/node-hubble.png?branch=master)](https://travis-ci.org/mozilla/node-hubble)
 
 This is an node.js, Express-based REST API for discovering the content type of URLs.
 
