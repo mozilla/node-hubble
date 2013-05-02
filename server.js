@@ -11,7 +11,8 @@ app.use( express.logger());
 app.use( express.compress());
 app.use( app.router );
 
-app.get( '/url/*', routes.url );
+app.get( '/mime/*', routes.mime );
+app.get( '/meta/*', routes.meta );
 app.get( '/healthcheck', routes.healthcheck );
 
 server = app.listen( port, function() {
