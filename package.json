@@ -22,6 +22,7 @@
   "dependencies": {
     "express": "3.2.1",
     "cheerio": "0.11.0",
+    "newrelic": "0.9.20",
     "request": "2.21.0"
   },
   "optionalDependencies": {
