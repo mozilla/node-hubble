@@ -295,6 +295,12 @@ $ EXPECT_CACHED=1 REDIS_URL=127.0.0.1 npm test
 $ EXPECT_CACHED=1 MEMCACHED_URL=127.0.0.1 npm test
 ```
 
+## New Relic
+
+To enable New Relic, set the `NEW_RELIC_ENABLED` environment variable and add a config file, or set the relevant environment variables.
+
+For more information on configuring New Relic, see: https://github.com/newrelic/node-newrelic/#configuring-the-agent
+
 ## License
 
 Copyright 2013 David Humphrey <david.humphrey@senecacollege.ca>
