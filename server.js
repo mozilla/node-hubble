@@ -18,6 +18,7 @@ app.use( app.router );
 
 app.get( '/mime/*', routes.mime );
 app.get( '/meta/*', routes.meta );
+app.get( '/img/*', routes.img );
 app.get( '/healthcheck', routes.healthcheck );
 
 server = app.listen( port, function() {

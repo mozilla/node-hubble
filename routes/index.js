@@ -1,6 +1,7 @@
-var cache = require( '../lib/cache.js' ),
-    request = require( 'request' ),
-    meta = require( '../lib/meta.js' );
+var request = require( 'request' ),
+    cache = require( '../lib/cache.js' ),
+    meta = require( '../lib/meta.js' ),
+    imgStream = require( '../lib/img-stream.js' );
 
 /**
  * Discover the mime type for a given resource, following redirects
@@ -52,6 +53,36 @@ function getMeta( url, callback ) {
 }
 
 /**
+ * Get the size (i.e., dimensions) of an image at the given URL
+ */
+function getImgSize( url, callback ) {
+  getContentType( url, function( err, res ) {
+    if ( err ) {
+      callback( err );
+      return;
+    }
+
+    if ( res.contentType.indexOf( 'image/' ) !== 0 ) {
+      callback( 'Expected image' );
+      return;
+    }
+
+    request( res.href ).pipe( imgStream.createSizeStream( function( err, size ) {
+      if ( err ) {
+        callback( err );
+        return;
+      }
+
+      callback( null, {
+        href: res.href,
+        contentType: res.contentType,
+        size: size
+      });
+    }));
+  });
+}
+
+/**
  * Build a route function (mime and meta are mostly the same)
  *
  * keySuffix - Cache key suffix (':meta' or ':mime')
@@ -63,7 +94,7 @@ function buildRoute( keySuffix, fn, errMsg ) {
     var url = req.params[ 0 ];
 
     if ( !url ) {
-      res.jsonp( { error: 'Expected url param, found none.' }, 500 );
+      res.jsonp( 500, { error: 'Expected url param, found none.' } );
       return;
     }
 
@@ -77,7 +108,7 @@ function buildRoute( keySuffix, fn, errMsg ) {
 
       fn( url, function( err, result ) {
         if ( err ) {
-          res.jsonp( { error: errMsg }, 500 );
+          res.jsonp( 500, { error: errMsg } );
           return;
         }
 
@@ -103,6 +134,14 @@ exports.mime = buildRoute( ':mime', getContentType,
  */
 exports.meta = buildRoute( ':meta', getMeta,
                            'Unable to read Social Graph or metadata for URL.' );
+
+/**
+ * Get the image dimensions for a given resource:
+ *
+ * http://localhost:8888/img/<url>
+ */
+exports.img = buildRoute( ':img', getImgSize,
+                          'Unable to read img info for URL.' );
 
 /**
  * http://localhost:8888/healthcheck

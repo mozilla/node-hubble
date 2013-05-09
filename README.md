@@ -29,6 +29,7 @@ There are a number of things you can lookup based on a URL. The server provides 
 
 * `mime` - find the content-type and actual URL (i.e., follow redirects) for a given URL
 * `meta` - like `mime`, but also extract Open Graph, Twitter Card, and other social metadata from the resource
+* `img` - find the type (i.e., content-type), actual URL (i.e., follow redirects) and size (i.e., width, height) of an image for a given URL
 
 ### /mime/<url>
 
@@ -235,6 +236,28 @@ http://localhost:8888/meta/https://developer.cdn.mozilla.net/media/img/mdn-logo-
 
 {
   "error": "Unable to read Social Graph or metadata for URL."
+}
+```
+
+### /img/<url>
+
+The server expects a URL in the following form:
+
+    http://localhost:<PORT>/img/<url>
+
+The server attempts to download the image at `<url>`--no images are saved on the server. If it is not an image, an error will occur. If it is an image, the image's width and height will be determined and returned as JSON.
+
+#### Example: PNG image with size 800 by 400 pixels
+```javascript
+http://localhost:8888/img/http://url.shortener.com/abcd3
+
+{
+  "href": "http://example.com/some-image.png",
+  "contentType": "image/png",
+  "size": {
+    "width": 800,
+    "height": 400
+  }
 }
 ```
 

@@ -1,6 +1,6 @@
 {
   "name": "node-hubble",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "author": "David Humphrey <david.humphrey@senecacollege.ca>",
   "contributors": [
     "Jon Buckley <jon@jbuckley.ca>"
@@ -21,8 +21,10 @@
   },
   "dependencies": {
     "express": "3.2.1",
+    "concat-stream": "0.1.1",
     "cheerio": "0.11.0",
     "newrelic": "0.9.20",
+    "canvas": "1.0.2",
     "request": "2.21.0"
   },
   "optionalDependencies": {
