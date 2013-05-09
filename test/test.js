@@ -290,6 +290,74 @@ describe( '/meta/* API', function() {
 });
 
 
+describe( '/img/* API', function() {
+
+  var api = host + '/img/',
+      port = 9001,
+      imageUrl = 'http://localhost:' + port + '/images/',
+      server;
+
+  before( function( done ) {
+    startServer( function() {
+      // Spin-up a second server to use for grabbing images. See
+      // test/test-files/images/* for all the images we'll use.
+      var express = require( 'express' ),
+          path = require( 'path' ),
+          app = express();
+      app.use( '/images', express.static( path.join( __dirname, 'test-files/images' ) ) );
+      server = app.listen( port, done );
+    });
+  });
+
+  after( function() {
+    server.close();
+    stopServer();
+  });
+
+  // Do a JSON request of the given <url>, i.e., http://localhost:8888/img/<url>
+  function apiHelper( url, callback ) {
+    request.get({ uri: api + imageUrl + url, json: true }, callback );
+  }
+
+  function doImgTypeTest( imgInfo, contentType, done ) {
+    apiHelper( imgInfo.filename, function( err, res, body ) {
+      assert.ok( !err );
+      assert.equal( res.statusCode, 200 );
+      assert.deepEqual( body, {
+        href: imageUrl + imgInfo.filename,
+        contentType: contentType,
+        size: {
+          width: imgInfo.width,
+          height: imgInfo.height
+        }
+      });
+
+      done();
+    });
+  }
+
+  /**
+   * If one of these image decoder types is failing, it might mean your
+   * build environment is missing libraries node-canvas needs to link.
+   * See https://github.com/LearnBoost/node-canvas/wiki/_pages for
+   * platform specific install details.
+   */
+  it( 'should give proper sizes for PNG files', function( done ) {
+    doImgTypeTest({ filename: '100x100.png', width: 100, height: 100 },
+                  'image/png', done );
+  });
+  it( 'should give proper sizes for JPEG files', function( done ) {
+    doImgTypeTest({ filename: '100x100.jpg', width: 100, height: 100 },
+                  'image/jpeg', done );
+  });
+  it( 'should give proper sizes for GIF files', function( done ) {
+    doImgTypeTest({ filename: '100x100.gif', width: 100, height: 100 },
+                  'image/gif', done );
+  });
+
+});
+
+
 describe( '/healthcheck', function() {
 
   function apiHelper( url, callback ) {
