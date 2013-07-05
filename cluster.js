@@ -1,28 +1,19 @@
 var cluster = require( 'cluster' ),
-    shouldFork = true,
     shouldRestart = process.env.RESTART == 1,
-    forks = ( process.env.FORKS|0 ) || 1;
+    forks = ( process.env.FORKS|0 ) || require( 'os' ).cpus().length;
 
-// Only (re)fork if we're a) starting up; or
-// b) had a worker get to 'listening'. Don't
-// refork in an endless loop if the process
-// is bad.
-function fork( force ) {
-  if ( !shouldFork && !force ) {
-    return;
-  }
-
+// Only (re)fork if we're a) starting up; or b) had a worker get to
+// 'listening'. Don't fork in an endless loop if the process is bad.
+function fork() {
   console.log( 'Starting server worker...' );
-  shouldFork = false;
   cluster.fork().on( 'listening', function() {
     console.log( 'Server worker started.' );
-    shouldFork = true;
   });
 }
 
 cluster.setupMaster({ exec: 'server.js' });
-cluster.on( 'disconnect', function( worker ) {
-  console.error( 'Server worker %s disconnected.', worker.id );
+cluster.on('exit', function(worker, code, signal) {
+  console.error( 'Server worker %s exited.', worker.id );
 
   // Restart server worker only if we've been configured that way.
   if ( shouldRestart ) {
@@ -37,5 +28,5 @@ cluster.on( 'disconnect', function( worker ) {
 });
 
 while( forks-- ) {
-  fork( true );
+  fork();
 }

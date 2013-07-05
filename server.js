@@ -26,7 +26,7 @@ app.use( function( req, res, next ) {
     try {
       // make sure we close down within 30 seconds
       var killtimer = setTimeout( function() {
-        process.exit(1);
+        process.exit( 1 );
       }, 30000);
       // But don't keep the process open just for that!
       killtimer.unref();
@@ -42,6 +42,7 @@ app.use( function( req, res, next ) {
       res.end( 'There was an error.' );
 
       d.dispose();
+      process.exit( 1 );
     } catch( err2 ) {
       console.error( 'Error: unable to send 500', err2.stack );
     }
