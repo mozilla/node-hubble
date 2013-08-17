@@ -18,11 +18,12 @@ var express = require( 'express' ),
 // to actually do something.
 if ( process.env.GRAYLOG_HOST ) {
   require( 'graylog' );
+  GLOBAL.graylogToConsole = true;
+  GLOBAL.graylogHost = process.env.GRAYLOG_HOST;
   report = function( err, isFatal ) {
     log( "[CRASH] node-hubble worker crashed",
          err.message,
          {
-           host: process.env.GRAYLOG_HOST,
            level: isFatal ? LOG_CRIT : LOG_ERR,
            facility: 'node-hubble',
            stack: err.stack,
