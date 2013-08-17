@@ -1,6 +1,6 @@
 {
   "name": "node-hubble",
-  "version": "0.6.0",
+  "version": "0.6.2",
   "author": "David Humphrey <david.humphrey@senecacollege.ca>",
   "contributors": [
     "Jon Buckley <jon@jbuckley.ca>"
@@ -20,11 +20,12 @@
     "test": "grunt && node ./node_modules/mocha/bin/mocha --reporter spec --slow 1000 --timeout 5000"
   },
   "dependencies": {
-    "express": "3.2.1",
+    "express": "3.3.1",
     "concat-stream": "0.1.1",
     "cheerio": "0.11.0",
+    "graylog": "0.1.3",
     "newrelic": "0.9.20",
-    "canvas": "1.0.2",
+    "canvas": "1.0.3",
     "request": "2.21.0"
   },
   "optionalDependencies": {
