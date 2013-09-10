@@ -23,7 +23,7 @@
     "express": "3.2.1",
     "concat-stream": "0.1.1",
     "cheerio": "0.11.0",
-    "newrelic": "0.9.20",
+    "newrelic": "0.10.3",
     "canvas": "1.0.2",
     "request": "2.21.0"
   },
