@@ -24,10 +24,10 @@
     "concat-stream": "0.1.1",
     "cheerio": "0.11.0",
     "newrelic": "0.9.20",
-    "canvas": "1.0.2",
     "request": "2.21.0"
   },
   "optionalDependencies": {
+    "canvas": "1.0.2",
     "mc": "~1.0.6",
     "hiredis": "~0.1.14",
     "redis": "~0.8.2"
