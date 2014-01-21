@@ -1,7 +1,64 @@
 var request = require( 'request' ),
     cache = require( '../lib/cache.js' ),
     meta = require( '../lib/meta.js' ),
-    imgStream = require( '../lib/img-stream.js' );
+    imgStream = require( '../lib/img-stream.js' ),
+    url = require( 'url' );
+
+/**
+ * Validate URLs for allowed ports (prevent cross protocol exploits)
+ * and and disallowed hosts (e.g., localhost). Extend the list of things
+ * allowed/disallowed by setting env variables as follows:
+ *
+ * - WHITELISTED_PORTS: comma separated list of ports to allow.
+ *                      Defaults to "80, 443, 8080". If you provide your own
+ *                      list make sure you include the defaults manually
+ *                      where applicable (i.e., no defaults will be added).
+ *
+ * - BLACKLISTED_HOSTS: comma separated list of hosts to disallow.
+ *                      Defaults to "localhost, 127.0.0.1". If you provide
+ *                      your own list make sure you include the defaults
+ *                      manually where applicable (i.e., no defaults will be
+ *                      added).
+ */
+var whitelistedPorts = ( function( whitelist ) {
+  if ( !whitelist ) {
+    return {
+      80: 1,
+      443: 1,
+      8080: 1
+    };
+  }
+  var list = {};
+  whitelist.split( /\s*,\s*/ ).forEach( function( port ) {
+    list[ port|0 ] = 1;
+  });
+  return list;
+}( process.env.WHITELISTED_PORTS ));
+
+var blacklistedHosts = ( function( blacklist ) {
+  if ( !blacklist ) {
+    return {
+      'localhost': 1,
+      '127.0.0.1': 1
+    };
+  }
+  var list = {};
+  blacklist.split( /\s*,\s*/ ).forEach( function( host ) {
+    list[ host ] = 1;
+  });
+  return list;
+}( process.env.BLACKLISTED_HOSTS ));
+
+function validateUrl( urlString ) {
+  // Make sure host is not blacklisted and port is allowed.
+  var urlObject = url.parse( urlString );
+  // Deal with port being null
+  urlObject.port = ( urlObject.port || 80 )|0;
+  return (
+    ( whitelistedPorts[ urlObject.port ] === 1 ) &&
+    ( blacklistedHosts[ urlObject.hostname ] !== 1 )
+  );
+}
 
 /**
  * Discover the mime type for a given resource, following redirects
@@ -95,6 +152,13 @@ function buildRoute( keySuffix, fn, errMsg ) {
 
     if ( !url ) {
       res.jsonp( 500, { error: 'Expected url param, found none.' } );
+      return;
+    }
+
+    // Make sure this URL doesn't include a bad port or host
+    if ( ! validateUrl( url ) ) {
+      // Indicate we aren't going to provide info for this url, without exact details.
+      res.send( 404 );
       return;
     }
 
