@@ -5,13 +5,15 @@ if ( process.env.NEW_RELIC_ENABLED ) {
 
 var express = require( 'express' ),
     request = require( 'request' ),
+    helmet = require( 'helmet'),
     routes = require( './routes' ),
     util = require( 'util' ),
     app = express(),
     port = process.env.PORT || 8888,
     server;
 
-app.disable( "x-powered-by" );
+app.disable( 'x-powered-by' );
+app.use( helmet.contentTypeOptions()) ;
 app.use( express.logger());
 app.use( express.compress());
 app.use( app.router );
