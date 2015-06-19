@@ -1,7 +1,8 @@
 var request = require( 'request' ),
     cache = require( '../lib/cache.js' ),
     meta = require( '../lib/meta.js' ),
-    imgStream = require( '../lib/img-stream.js' );
+    imgStream = require( '../lib/img-stream.js' ),
+    util = require( 'util' );
 
 /**
  * Discover the mime type for a given resource, following redirects
@@ -85,15 +86,17 @@ function getImgSize( url, callback ) {
 /**
  * Build a route function (mime and meta are mostly the same)
  *
- * keySuffix - Cache key suffix (':meta' or ':mime')
+ * keySuffix - Cache key suffix (e.g., ':meta' or ':mime')
  * fn - The function to call for this route
+ * logger - the logger to use for errors
  * errMsg - The error message to use if fn fails.
  */
-function buildRoute( keySuffix, fn, errMsg ) {
+function buildRoute( keySuffix, fn, logger, errMsg ) {
   return function( req, res ) {
     var url = req.params[ 0 ];
 
     if ( !url ) {
+      logger.error( "Missing url param" );
       res.jsonp( 500, { error: 'Expected url param, found none.' } );
       return;
     }
@@ -101,6 +104,10 @@ function buildRoute( keySuffix, fn, errMsg ) {
     var cacheKey = url + keySuffix;
 
     cache.read( cacheKey, function( err, cachedResult ) {
+      if ( err && err !== "No Cache" ) {
+        logger.error( "Cache Read Error: " + util.inspect( err ) );
+      }
+
       if ( cachedResult ) {
         res.jsonp( cachedResult );
         return;
@@ -108,6 +115,7 @@ function buildRoute( keySuffix, fn, errMsg ) {
 
       fn( url, function( err, result ) {
         if ( err ) {
+          logger.error( "Error [" + keySuffix + ", " + url + "]: " + err );
           res.jsonp( 500, { error: errMsg } );
           return;
         }
@@ -119,35 +127,40 @@ function buildRoute( keySuffix, fn, errMsg ) {
   };
 }
 
-/**
- * Get the MIME type (content-type) for a given resource:
- *
- * http://localhost:8888/mime/<url>
- */
-exports.mime = buildRoute( ':mime', getContentType,
-                           'Unable to determine content type.' );
 
-/**
- * Get the Social Graph and Metadata for a given resource:
- *
- * http://localhost:8888/meta/<url>
- */
-exports.meta = buildRoute( ':meta', getMeta,
-                           'Unable to read Social Graph or metadata for URL.' );
+module.exports = function( logger ) {
+  return {
+    /**
+     * Get the MIME type (content-type) for a given resource:
+     *
+     * http://localhost:8888/mime/<url>
+     */
+    mime: buildRoute( ':mime', getContentType, logger,
+                      'Unable to determine content type.' ),
 
-/**
- * Get the image dimensions for a given resource:
- *
- * http://localhost:8888/img/<url>
- */
-exports.img = buildRoute( ':img', getImgSize,
-                          'Unable to read img info for URL.' );
+    /**
+     * Get the Social Graph and Metadata for a given resource:
+     *
+     * http://localhost:8888/meta/<url>
+     */
+    meta: buildRoute( ':meta', getMeta, logger,
+                      'Unable to read Social Graph or metadata for URL.' ),
 
-/**
- * http://localhost:8888/healthcheck
- */
-exports.healthcheck = function( req, res ) {
-  res.json({
-    http: "okay"
-  });
+    /**
+     * Get the image dimensions for a given resource:
+     *
+     * http://localhost:8888/img/<url>
+     */
+    img: buildRoute( ':img', getImgSize, logger,
+                     'Unable to read img info for URL.' ),
+
+    /**
+     * http://localhost:8888/healthcheck
+     */
+    healthcheck: function( req, res ) {
+      res.json({
+        http: "okay"
+      });
+    }
+  };
 };
