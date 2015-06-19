@@ -35,7 +35,7 @@ There are a number of things you can lookup based on a URL. The server provides 
 
 The server expects a URL in the following form:
 
-    http://localhost:<PORT>/mime/<ur>l
+    http://localhost:<PORT>/mime/<url>
 
 The server takes the URL and attempts to do two things. First, it gets the actual URL in the case that a URL shortener has been used, or other redirects. Second, it requests the HTTP headers for this resource, and determins the `content-type` that is being used. Both pieces of information are returned as JSON.
 
