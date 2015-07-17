@@ -2,14 +2,21 @@ var assert = require( 'assert' ),
     fork = require( 'child_process' ).fork,
     request = require( 'request' ),
     child,
-    host = 'http://localhost:8888',
+    port = 8888,
+    host = 'http://localhost:' + port,
     // If using a cache, configure the environment to have EXPECT_CACHED=1
     expectCached = process.env.EXPECT_CACHED === '1';
 
 
-function startServer( callback ) {
-  // Spin-up the server as a child process
-  child = fork( 'server.js', null, {} );
+function startServer( env, callback ) {
+  if ( typeof env === 'function' ) {
+    callback = env;
+    env = {};
+  }
+  env = env || {};
+
+  // Spin-up the server as a child process.
+  child = fork( 'server.js', { env: env });
   child.on( 'message', function( msg ) {
     if ( msg === 'Started' ) {
       callback();
@@ -106,7 +113,7 @@ describe( '/meta/* API', function() {
       server;
 
   before( function( done ) {
-    startServer( function() {
+    startServer( { BLACKLISTED_HOSTS: 'none', WHITELISTED_PORTS: '' + port }, function() {
       // Spin-up a second server to use for grabbing sample HTML pages with
       // metadata.  See test/test-files/* for all the pages we'll use.
       var express = require( 'express' ),
@@ -298,7 +305,7 @@ describe( '/img/* API', function() {
       server;
 
   before( function( done ) {
-    startServer( function() {
+    startServer( { BLACKLISTED_HOSTS: 'none', WHITELISTED_PORTS: '' + port }, function() {
       // Spin-up a second server to use for grabbing images. See
       // test/test-files/images/* for all the images we'll use.
       var express = require( 'express' ),
@@ -353,6 +360,62 @@ describe( '/img/* API', function() {
   it( 'should give proper sizes for GIF files', function( done ) {
     doImgTypeTest({ filename: '100x100.gif', width: 100, height: 100 },
                   'image/gif', done );
+  });
+
+});
+
+
+describe( 'Blacklisting Hosts, Whitelisting Ports', function() {
+
+  var secondPort = 9003,
+      imageUrl = 'http://localhost:' + secondPort + '/images/',
+      server;
+
+  before( function( done ) {
+    startServer({
+      BLACKLISTED_HOSTS: 'github.com',
+      WHITELISTED_PORTS: '80'
+    }, function() {
+      // Spin-up a second server
+      var express = require( 'express' ),
+          path = require( 'path' ),
+          app = express();
+      app.use( '/images', express.static( path.join( __dirname, 'test-files/images' ) ) );
+      server = app.listen( secondPort, done );
+    });
+  });
+
+  after( function() {
+    server.close();
+    stopServer();
+  });
+
+  function checkResponseCode( route, url, expectedResult, callback ) {
+    request.get({ uri: host + '/' + route + '/' + url, json: true }, function( err, res, body ) {
+      assert.ok( !err );
+      assert.equal( res.statusCode, expectedResult );
+      callback();
+    });
+  }
+
+  it( 'should honour Blacklisted Hosts for all routes accepting URL params', function( done ) {
+
+    function checkRoute( route, callback ) {
+      // Github should be blocked due to being a Blacklisted Host
+      checkResponseCode( route, 'https://github.com/humphd/node-hubble', 404, function() {
+        // localhost should be blocked due to being a non-Whitelisted Port
+        checkResponseCode( route, 'http://localhost:' + port, 404, function() {
+          // 127.0.0.1:9003 should get blocked due to using a non-Whitelisted Port
+          checkResponseCode( route, 'http://127.0.0.1:' + secondPort, 404, callback );
+        });
+      });
+    }
+
+    checkRoute( 'mime', function() {
+      checkRoute( 'meta', function() {
+        checkRoute( 'img', done );
+      });
+    });
   });
 
 });
